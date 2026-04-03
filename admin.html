@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>$SUCCESS — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&family=Inconsolata:wght@400&family=Lora:wght@400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: #FAF7F2;
+      color: #1C1917;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .admin-card {
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px 32px;
+      box-shadow: 0 2px 20px rgba(28, 25, 23, 0.06);
+    }
+    .admin-title {
+      font-family: 'Fraunces', serif;
+      font-size: 20px;
+      font-style: italic;
+      color: #6B8F71;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .field {
+      margin-bottom: 20px;
+    }
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: #9C9589;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .field input {
+      width: 100%;
+      font-family: 'Inconsolata', monospace;
+      font-size: 14px;
+      padding: 10px 14px;
+      border: 1px solid rgba(28, 25, 23, 0.1);
+      border-radius: 8px;
+      background: #FAF7F2;
+      color: #1C1917;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus {
+      border-color: #6B8F71;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      background: #6B8F71;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+    .btn:hover { background: #5a7d60; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .status {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 16px;
+      min-height: 20px;
+    }
+    .status.ok { color: #6B8F71; }
+    .status.err { color: #C2785C; }
+    #loginSection, #configSection { display: none; }
+    #loginSection.active, #configSection.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="admin-card">
+    <div class="admin-title">$SUCCESS — Admin</div>
+
+    <div id="loginSection" class="active">
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="passwordInput" placeholder="Enter admin password">
+      </div>
+      <button class="btn" id="loginBtn">Authenticate</button>
+      <p class="status" id="loginStatus"></p>
+    </div>
+
+    <div id="configSection">
+      <div class="field">
+        <label>Contract Address (CA)</label>
+        <input type="text" id="caInput" placeholder="Token contract address">
+      </div>
+      <div class="field">
+        <label>Twitter URL</label>
+        <input type="url" id="twitterInput" placeholder="https://x.com/...">
+      </div>
+      <div class="field">
+        <label>Community URL</label>
+        <input type="url" id="communityInput" placeholder="https://t.me/...">
+      </div>
+      <div class="field">
+        <label>Buy URL</label>
+        <input type="url" id="buyInput" placeholder="https://pump.fun/...">
+      </div>
+      <div class="field">
+        <label>Tweet 1 Image URL</label>
+        <input type="url" id="tweet1Input" placeholder="https://...">
+      </div>
+      <div class="field">
+        <label>Tweet 2 Image URL</label>
+        <input type="url" id="tweet2Input" placeholder="https://...">
+      </div>
+      <button class="btn" id="saveBtn">Save Configuration</button>
+      <p class="status" id="saveStatus"></p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      let adminHash = '';
+
+      async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+
+      async function loadCurrent() {
+        try {
+          const res = await fetch('/api/config');
+          const data = await res.json();
+          if (data.ca) document.getElementById('caInput').value = data.ca;
+          if (data.twitter) document.getElementById('twitterInput').value = data.twitter;
+          if (data.community) document.getElementById('communityInput').value = data.community;
+          if (data.buy) document.getElementById('buyInput').value = data.buy;
+          if (data.tweet1) document.getElementById('tweet1Input').value = data.tweet1;
+          if (data.tweet2) document.getElementById('tweet2Input').value = data.tweet2;
+        } catch (e) {}
+      }
+
+      document.getElementById('loginBtn').addEventListener('click', async () => {
+        const pw = document.getElementById('passwordInput').value;
+        if (!pw) return;
+        adminHash = await sha256(pw);
+
+        try {
+          const res = await fetch('/api/config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ hash: adminHash })
+          });
+          const data = await res.json();
+          if (res.status === 401) {
+            document.getElementById('loginStatus').textContent = 'Wrong password';
+            document.getElementById('loginStatus').className = 'status err';
+            return;
+          }
+          document.getElementById('loginSection').classList.remove('active');
+          document.getElementById('configSection').classList.add('active');
+          loadCurrent();
+        } catch (e) {
+          document.getElementById('loginStatus').textContent = 'Connection error';
+          document.getElementById('loginStatus').className = 'status err';
+        }
+      });
+
+      document.getElementById('passwordInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') document.getElementById('loginBtn').click();
+      });
+
+      document.getElementById('saveBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('saveBtn');
+        const status = document.getElementById('saveStatus');
+        btn.disabled = true;
+
+        const config = {
+          hash: adminHash,
+          ca: document.getElementById('caInput').value.trim(),
+          twitter: document.getElementById('twitterInput').value.trim(),
+          community: document.getElementById('communityInput').value.trim(),
+          buy: document.getElementById('buyInput').value.trim(),
+          tweet1: document.getElementById('tweet1Input').value.trim(),
+          tweet2: document.getElementById('tweet2Input').value.trim()
+        };
+
+        try {
+          const res = await fetch('/api/config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(config)
+          });
+          const data = await res.json();
+          if (data.ok) {
+            status.textContent = 'Saved';
+            status.className = 'status ok';
+          } else {
+            status.textContent = data.error || 'Failed';
+            status.className = 'status err';
+          }
+        } catch (e) {
+          status.textContent = 'Connection error';
+          status.className = 'status err';
+        }
+        btn.disabled = false;
+        setTimeout(() => { status.textContent = ''; }, 3000);
+      });
+    })();
+  </script>
+</body>
+</html>

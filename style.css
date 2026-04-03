@@ -1,0 +1,466 @@
+/* ── $SUCCESS — The Illusion of Youth ── */
+
+:root {
+  --parchment: #FAF7F2;
+  --ink: #1C1917;
+  --sage: #6B8F71;
+  --terracotta: #C2785C;
+  --stone: #9C9589;
+  --quote-bg: #F0EBE3;
+  --content-width: 680px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.75;
+  color: var(--ink);
+  background: var(--parchment);
+  overflow-x: hidden;
+}
+
+/* ── Paper grain texture ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.015;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 400px 400px;
+}
+
+/* ── Fixed header ── */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: rgba(250, 247, 242, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(28, 25, 23, 0.08);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+.site-header.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.header-ticker {
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--sage);
+  letter-spacing: 0.5px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-ca {
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px;
+  color: var(--stone);
+  cursor: pointer;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+}
+
+.header-ca:hover {
+  color: var(--sage);
+}
+
+.header-link {
+  color: var(--stone);
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.header-link:hover {
+  color: var(--sage);
+}
+
+.header-link svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  font-family: 'Inconsolata', monospace;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--parchment);
+  border: 1px solid rgba(28, 25, 23, 0.12);
+  padding: 8px 20px;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Hero (Chapter 0) ── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to bottom, rgba(250, 247, 242, 0) 0%, rgba(250, 247, 242, 1) 100%);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 24px 60px;
+  max-width: 720px;
+}
+
+.hero-attribution {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--stone);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.hero-quote {
+  font-family: 'Fraunces', serif;
+  font-size: 42px;
+  line-height: 1.2;
+  color: var(--ink);
+  margin-bottom: 40px;
+  font-weight: 400;
+}
+
+.hero-scroll {
+  font-family: 'Lora', serif;
+  font-size: 15px;
+  color: var(--stone);
+  margin-bottom: 16px;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: var(--sage);
+  margin: 0 auto;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+@keyframes scrollBounce {
+  0%, 100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.3;
+    transform: translateY(12px);
+  }
+}
+
+/* ── Essay container ── */
+.essay {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+/* ── Chapter headings ── */
+.chapter-heading {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 40px;
+  line-height: 1.3;
+}
+
+/* ── Paragraphs ── */
+.essay p {
+  margin-bottom: 28px;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+/* ── Block quotes ── */
+.essay blockquote {
+  border-left: 3px solid var(--sage);
+  padding: 20px 24px;
+  margin: 36px 0;
+  background: var(--quote-bg);
+  border-radius: 0 8px 8px 0;
+}
+
+.essay blockquote p {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.5;
+  margin-bottom: 0;
+  color: var(--ink);
+}
+
+/* ── Highlighted lines ── */
+.highlight-line {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--sage);
+  padding-left: 24px;
+  margin: 36px 0;
+  line-height: 1.5;
+}
+
+/* ── Divider (three dots) ── */
+.divider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 60px auto;
+}
+
+.divider span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sage);
+}
+
+/* ── Section label ── */
+.section-label {
+  font-family: 'Fraunces', serif;
+  font-size: 14px;
+  color: var(--stone);
+  letter-spacing: 3px;
+  text-align: center;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+}
+
+/* ── Tweet embeds ── */
+.tweet-wrapper {
+  max-width: 520px;
+  margin: 0 auto 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(28, 25, 23, 0.08);
+  overflow: hidden;
+}
+
+.tweet-wrapper img {
+  width: 100%;
+  display: block;
+}
+
+/* ── How to buy steps ── */
+.buy-steps {
+  margin: 36px 0;
+}
+
+.buy-step {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--stone);
+  padding-left: 24px;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+/* ── Gallery ── */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.gallery-item {
+  border-radius: 12px;
+  border: 1px solid rgba(28, 25, 23, 0.06);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(28, 25, 23, 0.06);
+}
+
+.gallery-item img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 1;
+}
+
+/* ── Colophon (footer) ── */
+.colophon {
+  text-align: center;
+  padding: 0 24px 120px;
+}
+
+.colophon-line {
+  width: 120px;
+  height: 1px;
+  background: rgba(28, 25, 23, 0.08);
+  margin: 80px auto 40px;
+}
+
+.colophon-quote {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--stone);
+  margin-bottom: 12px;
+}
+
+.colophon-ticker {
+  font-family: 'Inconsolata', monospace;
+  font-size: 11px;
+  color: var(--stone);
+}
+
+/* ── Scroll reveal ── */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+
+  .hero-quote {
+    font-size: 28px;
+  }
+
+  .hero-attribution {
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+
+  .chapter-heading {
+    font-size: 24px;
+  }
+
+  .essay p {
+    font-size: 16px;
+  }
+
+  .essay blockquote p {
+    font-size: 19px;
+  }
+
+  .highlight-line {
+    font-size: 18px;
+    padding-left: 16px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .essay {
+    padding: 60px 20px;
+  }
+
+  .tweet-wrapper {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content {
+    padding: 0 20px 40px;
+  }
+
+  .hero-quote {
+    font-size: 24px;
+  }
+
+  .essay {
+    padding: 40px 16px;
+  }
+
+  .header-actions {
+    gap: 12px;
+  }
+}
