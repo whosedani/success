@@ -252,7 +252,7 @@ body::before {
 }
 
 /* ── Block quotes ── */
-.essay blockquote {
+.essay blockquote:not(.twitter-tweet) {
   border-left: 3px solid var(--sage);
   padding: 20px 24px;
   margin: 36px 0;
