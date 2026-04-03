@@ -23,39 +23,27 @@
   }
 
   function applyConfig() {
-    // CA display
-    const headerCa = document.getElementById('headerCa');
-    if (headerCa && CONFIG.ca) {
-      const short = CONFIG.ca.length > 10
-        ? CONFIG.ca.slice(0, 6) + '...' + CONFIG.ca.slice(-4)
-        : CONFIG.ca;
-      headerCa.textContent = short;
-      headerCa.title = CONFIG.ca;
+    // CA display — full, no truncation
+    if (CONFIG.ca) {
+      var cas = document.querySelectorAll('#headerCa, #heroCa');
+      cas.forEach(function (el) {
+        el.textContent = CONFIG.ca;
+        el.title = CONFIG.ca;
+      });
     }
 
     // Links
-    const communityLink = document.getElementById('communityLink');
-    if (communityLink && CONFIG.community) {
-      communityLink.href = CONFIG.community;
-    }
-
-    // Tweet images
-    if (CONFIG.tweet1) {
-      const img = document.getElementById('tweet1Img');
-      if (img) img.src = CONFIG.tweet1;
-    }
-    if (CONFIG.tweet2) {
-      const img = document.getElementById('tweet2Img');
-      if (img) img.src = CONFIG.tweet2;
+    var twitterLink = document.getElementById('twitterLink');
+    if (twitterLink && CONFIG.twitter) {
+      twitterLink.href = CONFIG.twitter;
     }
   }
 
   // ── Copy CA ──
   function initCopy() {
-    const headerCa = document.getElementById('headerCa');
-    if (headerCa) {
-      headerCa.addEventListener('click', copyCA);
-    }
+    document.querySelectorAll('#headerCa, #heroCa').forEach(function (el) {
+      el.addEventListener('click', copyCA);
+    });
   }
 
   function copyCA() {
