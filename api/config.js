@@ -1,5 +1,7 @@
 export default async function handler(req, res) {
-  const { KV_REST_API_URL, KV_REST_API_TOKEN, ADMIN_HASH } = process.env;
+  const KV_REST_API_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const KV_REST_API_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+  const ADMIN_HASH = process.env.ADMIN_HASH;
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
