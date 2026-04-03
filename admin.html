@@ -109,22 +109,6 @@
         <label>Twitter URL</label>
         <input type="url" id="twitterInput" placeholder="https://x.com/...">
       </div>
-      <div class="field">
-        <label>Community URL</label>
-        <input type="url" id="communityInput" placeholder="https://t.me/...">
-      </div>
-      <div class="field">
-        <label>Buy URL</label>
-        <input type="url" id="buyInput" placeholder="https://pump.fun/...">
-      </div>
-      <div class="field">
-        <label>Tweet 1 Image URL</label>
-        <input type="url" id="tweet1Input" placeholder="https://...">
-      </div>
-      <div class="field">
-        <label>Tweet 2 Image URL</label>
-        <input type="url" id="tweet2Input" placeholder="https://...">
-      </div>
       <button class="btn" id="saveBtn">Save Configuration</button>
       <p class="status" id="saveStatus"></p>
     </div>
@@ -147,10 +131,6 @@
           const data = await res.json();
           if (data.ca) document.getElementById('caInput').value = data.ca;
           if (data.twitter) document.getElementById('twitterInput').value = data.twitter;
-          if (data.community) document.getElementById('communityInput').value = data.community;
-          if (data.buy) document.getElementById('buyInput').value = data.buy;
-          if (data.tweet1) document.getElementById('tweet1Input').value = data.tweet1;
-          if (data.tweet2) document.getElementById('tweet2Input').value = data.tweet2;
         } catch (e) {}
       }
 
@@ -192,11 +172,7 @@
         const config = {
           hash: adminHash,
           ca: document.getElementById('caInput').value.trim(),
-          twitter: document.getElementById('twitterInput').value.trim(),
-          community: document.getElementById('communityInput').value.trim(),
-          buy: document.getElementById('buyInput').value.trim(),
-          tweet1: document.getElementById('tweet1Input').value.trim(),
-          tweet2: document.getElementById('tweet2Input').value.trim()
+          twitter: document.getElementById('twitterInput').value.trim()
         };
 
         try {
