@@ -33,10 +33,9 @@
     }
 
     // Links
-    var twitterLink = document.getElementById('twitterLink');
-    if (twitterLink && CONFIG.twitter) {
-      twitterLink.href = CONFIG.twitter;
-    }
+    document.querySelectorAll('#twitterLink, #heroTwitterLink').forEach(function (el) {
+      if (CONFIG.twitter) el.href = CONFIG.twitter;
+    });
   }
 
   // ── Copy CA ──

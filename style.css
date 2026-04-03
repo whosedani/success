@@ -189,6 +189,17 @@ body::before {
   margin-bottom: 16px;
 }
 
+.hero-x-link {
+  color: var(--stone);
+  transition: color 0.2s;
+  margin-bottom: 20px;
+  display: inline-flex;
+}
+
+.hero-x-link:hover {
+  color: var(--sage);
+}
+
 .hero-quote {
   font-family: 'Fraunces', serif;
   font-size: 42px;
