@@ -149,6 +149,23 @@
     }, { passive: true });
   }
 
+  // ── Tweet iframe auto-resize ──
+  function initTweetResize() {
+    window.addEventListener('message', function (e) {
+      if (e.origin !== 'https://platform.twitter.com') return;
+      try {
+        var data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        if (data['twttr.embed'] && data['twttr.embed'].method === 'twttr.private.resize') {
+          var params = data['twttr.embed'].params;
+          if (params && params.length > 0) {
+            var frame = document.getElementById('tweetFrame');
+            if (frame) frame.style.height = params[0].height + 'px';
+          }
+        }
+      } catch (ex) {}
+    });
+  }
+
   // ── Init ──
   document.addEventListener('DOMContentLoaded', () => {
     loadConfig();
@@ -156,5 +173,6 @@
     initHeader();
     initCopy();
     initScrollHint();
+    initTweetResize();
   });
 })();
