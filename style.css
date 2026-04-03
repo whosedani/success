@@ -308,17 +308,9 @@ body::before {
 }
 
 /* ── Tweet embeds ── */
-.tweet-wrapper {
-  max-width: 520px;
+.tweet-embed {
+  max-width: 550px;
   margin: 0 auto 24px;
-  border-radius: 16px;
-  border: 1px solid rgba(28, 25, 23, 0.08);
-  overflow: hidden;
-}
-
-.tweet-wrapper img {
-  width: 100%;
-  display: block;
 }
 
 /* ── How to buy steps ── */
